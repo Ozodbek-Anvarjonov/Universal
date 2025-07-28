@@ -11,4 +11,9 @@
     <ProjectReference Include="..\Project.Persistence\Project.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Common\Identities\" />
+    <Folder Include="Common\Notifications\" />
+  </ItemGroup>
+
 </Project>
