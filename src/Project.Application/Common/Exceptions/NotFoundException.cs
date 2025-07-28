@@ -5,7 +5,7 @@ namespace Project.Application.Common.Exceptions;
 
 public class NotFoundException : AppException
 {
-    private const string ErrorType = "https://httpstatuses.com/404/";
+    private const string ErrorType = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/404";
     private const string ErrorTitle = "Not Found";
     private const string ErrorMessage = "The requested resource was not found.";
     private const string ErrorMessageFormat = "{0} with {1} '{2}' is not found.";

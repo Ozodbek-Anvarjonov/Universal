@@ -5,7 +5,7 @@ namespace Project.Application.Common.Exceptions;
 
 public class ConflictException : AppException
 {
-    private const string ErrorType = "https://httpstatuses.com/409/";
+    private const string ErrorType = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/409";
     private const string ErrorTitle = "Resource Already Exists";
     private const string ErrorMessage = "The resource you are trying to create already exists.";
     private const string ErrorMessageFormat = "{0} with {1} '{2}' already exists.";

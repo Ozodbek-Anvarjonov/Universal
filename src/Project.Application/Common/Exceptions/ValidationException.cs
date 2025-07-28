@@ -4,7 +4,7 @@ namespace Project.Application.Common.Exceptions;
 
 public class ValidationException : AppException
 {
-    private const string ErrorType = "https://httpstatuses.com/400/";
+    private const string ErrorType = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/400";
     private const string ErrorTitle = "Validation Error";
     private const string ErrorMessage = "One or more validation failures occurred.";
     private readonly IDictionary<string, string[]> _errors;

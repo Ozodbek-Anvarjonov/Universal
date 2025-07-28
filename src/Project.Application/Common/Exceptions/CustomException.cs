@@ -5,7 +5,7 @@ namespace Project.Application.Common.Exceptions;
 
 public class CustomException : AppException
 {
-    private static string DefaultErrorType = "https://httpstatuses.com/{0}";
+    private static string DefaultErrorType = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/{0}";
     private const HttpStatusCode DefaultStatusCode = HttpStatusCode.InternalServerError;
     private const string DefaultErrorTitle = "Internal Server Error";
     private const string DefaultErrorMessage = "Internal server error.";

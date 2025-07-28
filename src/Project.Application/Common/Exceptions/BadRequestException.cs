@@ -5,7 +5,7 @@ namespace Project.Application.Common.Exceptions;
 
 public class BadRequestException : AppException
 {
-    private const string ErrorType = "https://httpstatuses.com/400/";
+    private const string ErrorType = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/400";
     private const string ErrorTitle = "Bad Request";
     private const string ErrorMessage = "The request could not be understood or was missing required parameters.";
     private const string ErrorMessageFormat = "{0} is invalid. Reason: {1}.";
