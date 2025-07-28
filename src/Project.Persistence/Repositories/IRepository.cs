@@ -11,13 +11,11 @@ public interface IRepository<TEntity, TContext>
 {
     IQueryable<TEntity> Get(Expression<Func<TEntity, bool>>? predicate = default);
 
-    Task<TEntity?> GetByIdAsync(int id, bool asNoTracking = false, CancellationToken cancellationToken = default);
+    Task<TEntity?> GetByIdAsync(long id, bool asNoTracking = true, CancellationToken cancellationToken = default);
 
     Task<TEntity> CreateAsync(TEntity entity, bool saveChanges = true, CancellationToken cancellationToken = default);
 
     Task<TEntity> UpdateAsync(TEntity entity, bool saveChanges = true, CancellationToken cancellationToken = default);
-
-    Task<bool> DeleteByIdAsync(long id, bool saveChanges = true, CancellationToken cancellationToken = default);
 
     Task<bool> DeleteAsync(TEntity entity, bool saveChanges = true, CancellationToken cancellationToken = default);
 

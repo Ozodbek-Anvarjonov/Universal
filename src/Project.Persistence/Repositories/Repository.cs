@@ -16,7 +16,7 @@ public class Repository<TEntity, TContext>(TContext context) : IRepository<TEnti
         return predicate is not null ? query.Where(predicate) : query;
     }
 
-    public async Task<TEntity?> GetByIdAsync(int id, bool asNoTracking = false, CancellationToken cancellationToken = default)
+    public async Task<TEntity?> GetByIdAsync(long id, bool asNoTracking = true, CancellationToken cancellationToken = default)
     {
         var query = context.Set<TEntity>().AsQueryable();
 
@@ -47,19 +47,6 @@ public class Repository<TEntity, TContext>(TContext context) : IRepository<TEnti
             await context.SaveChangesAsync(cancellationToken);
 
         return entity;
-    }
-
-    public async Task<bool> DeleteByIdAsync(long id, bool saveChanges = true, CancellationToken cancellationToken = default)
-    {
-        var exist = await context.Set<TEntity>().FirstOrDefaultAsync(entity => entity.Id == id)
-            ?? throw new InvalidOperationException($"{nameof(TEntity)} is not exists with ID {id}");
-
-        context.Remove(exist);
-
-        if (saveChanges)
-            await context.SaveChangesAsync(cancellationToken);
-
-        return true;
     }
 
     public async Task<bool> DeleteAsync(TEntity entity, bool saveChanges = true, CancellationToken cancellationToken = default)

@@ -1,13 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Project.Domain.Entities;
 using Project.Persistence.DataContexts;
+using Project.Persistence.Repositories;
 using Project.Persistence.UnitOfWork.Interfaces;
 
 namespace Project.Persistence.UnitOfWork;
 
-public class UnitOfWork<TContext>(TContext context) : IUnitOfWork<TContext>
+public class UnitOfWork<TContext>(
+    TContext context,
+    IRepository<User, TContext> users
+    ) : IUnitOfWork<TContext>
     where TContext : DbContext
 {
+    // repositories
+    public IRepository<User, TContext> Users { get; } = users;
+
+    //
     private IDbContextTransaction? currentTransaction;
     private bool disposed;
 
@@ -83,6 +92,9 @@ public class UnitOfWork<TContext>(TContext context) : IUnitOfWork<TContext>
     #endregion
 }
 
-public class UnitOfWork(AppDbContext context) : UnitOfWork<AppDbContext>(context)
+public class UnitOfWork(
+    AppDbContext context,
+    IRepository<User, AppDbContext> users
+    ) : UnitOfWork<AppDbContext>(context, users)
 {
 }

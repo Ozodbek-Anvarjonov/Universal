@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 namespace Project.Api.Controllers;
-
-[ApiController]
 [Route("api/[controller]")]
+[ApiController]
 public class BaseController : ControllerBase
 {
 }
