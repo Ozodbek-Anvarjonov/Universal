@@ -1,15 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Project.Application.Common.Exceptions;
 using Project.Application.Common.Filters;
+using Project.Application.Common.Identities;
 using Project.Application.Common.Response;
 using Project.Application.Services;
 using Project.Domain.Entities;
+using Project.Domain.Enums;
 using Project.Infrastructure.Common.Extensions;
 using Project.Persistence.Repositories;
 
 namespace Project.Infrastructure.Services;
 
-public class UserService(IRepository<User> repository, IHeaderWriter writer) : IUserService
+public class UserService(
+    IRepository<User> repository,
+    IHeaderWriter writer,
+    IPasswordHasherService passwordHasherService
+    ) : IUserService
 {
     public Task<IEnumerable<User>> GetAsync(UserFilter filter, bool asNoTracking = true, CancellationToken cancellationToken = default)
     {
@@ -53,6 +59,8 @@ public class UserService(IRepository<User> repository, IHeaderWriter writer) : I
 
     public async Task<User> CreateAsync(User user, bool saveChanges = true, CancellationToken cancellationToken = default)
     {
+        user.Password = await passwordHasherService.HashAsync(user.Password, cancellationToken: cancellationToken);
+
         var created = await repository.CreateAsync(user, saveChanges, cancellationToken);
 
         return created;
@@ -71,7 +79,10 @@ public class UserService(IRepository<User> repository, IHeaderWriter writer) : I
     {
         var delete = await GetByIdAsync(id, false, cancellationToken);
 
-        await repository.DeleteAsync(delete);
+        if (delete.Role == UserRole.Owner)
+            throw new ConflictException("System owner cannot be deleted.");
+
+        await repository.DeleteAsync(delete, cancellationToken: cancellationToken);
 
         return true;
     }

@@ -37,6 +37,11 @@ public class AuthService(
 
     public async Task<bool> RegisterAsync(User user, CancellationToken cancellationToken = default)
     {
+        user.Password = await passwordHasherService.HashAsync(user.Password, cancellationToken: cancellationToken);
+
+        Console.WriteLine(user.Password);
+        throw new NotFoundException(user.Password);
+
         var createdUser = await unitOfWork.Users.CreateAsync(user, cancellationToken: cancellationToken);
 
         return createdUser != null;

@@ -1,13 +1,16 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.OpenApi.Models;
 using Project.Api.ExceptionHandlers;
 using Project.Api.Routing;
 using Project.Api.Services;
 using Project.Application.Common.Response;
+using Project.Application.Settings;
 using Project.Persistence.UnitOfWork.Interfaces;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 namespace Project.Api.Extensions;
 
@@ -22,6 +25,8 @@ public static class DependencyInjection
         services.AddValidators();
         services.AddHttpContextAccessor();
         services.AddMappers();
+        services.AddJsonConverter();
+        services.AddSettings(configuration);
 
         return services;
     }
@@ -105,6 +110,24 @@ public static class DependencyInjection
                     { jwtSecurityScheme, Array.Empty<string>() }
                 });
         });
+
+        return services;
+    }
+
+    private static IServiceCollection AddJsonConverter(this IServiceCollection services)
+    {
+        services.Configure<JsonOptions>(options =>
+        {
+            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
+
+        return services;
+    }
+
+    private static IServiceCollection AddSettings(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
+        services.Configure<SystemSettings>(configuration.GetSection(nameof(SystemSettings)));
 
         return services;
     }
