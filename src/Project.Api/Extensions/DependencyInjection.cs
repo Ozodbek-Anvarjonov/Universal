@@ -39,6 +39,9 @@ public static class DependencyInjection
         app.UseSwagger();
         app.UseSwaggerUI();
         app.UseExceptionHandler();
+        app.UseRouting();
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.MapControllers();
 
         return app;

@@ -3,14 +3,16 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Project.Api.Extensions;
+using Project.Api.Filters;
 using Project.Application.Common.Filters;
 using Project.Application.Dtos.Users;
 using Project.Application.Services;
 using Project.Domain.Entities;
+using Project.Domain.Enums;
 
 namespace Project.Api.Controllers;
 
-[Authorize]
+[CustomAuthorize(nameof(UserRole.Client))]
 public class UsersController(
     IUserService service,
     IValidator<UserDto> validator,
