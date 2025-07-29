@@ -40,8 +40,10 @@ public static class DependencyInjection
 
     private static IServiceCollection AddCaching(this IServiceCollection services)
     {
-        services.AddSingleton<ICacheBroker, LazyMemoryCacheBroker>();
+        services.AddMemoryCache();
+        services.AddSingleton<ICacheBroker, MemoryCacheBroker>();
         //services.AddSingleton<ICacheBroker, RedisDistributedCacheBroker>();
+        //services.AddDistributedMemoryCache();
 
         return services;
     }

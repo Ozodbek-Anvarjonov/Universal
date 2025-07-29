@@ -31,7 +31,6 @@ public static class DependencyInjection
         services.AddJsonConverter();
         services.AddSettings(configuration);
         services.AddSecurity(configuration);
-        services.AddMemoryCache();
 
         return services;
     }
