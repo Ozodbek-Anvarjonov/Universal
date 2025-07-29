@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Project.Api.Extensions;
 using Project.Application.Common.Identities;
 using Project.Application.Dtos.Login;
 using Project.Application.Dtos.Users;
@@ -7,7 +9,11 @@ using Project.Domain.Entities;
 
 namespace Project.Api.Controllers;
 
-public class AuthController(IAuthService service, IMapper mapper) : BaseController
+public class AuthController(
+    IAuthService service,
+    IMapper mapper,
+    IValidator<UserDto> validator
+    ) : BaseController
 {
     [HttpPost("login/email")]
     public async ValueTask<IActionResult> LoginWithEmail(
@@ -37,6 +43,8 @@ public class AuthController(IAuthService service, IMapper mapper) : BaseControll
         CancellationToken cancellationToken = default
         )
     {
+        await validator.EnsureValidationAsync(dto);
+
         var data = await service.RegisterAsync(mapper.Map<User>(dto), cancellationToken);
 
         return Ok(data);
