@@ -12,13 +12,14 @@ using Project.Domain.Enums;
 
 namespace Project.Api.Controllers;
 
-[CustomAuthorize(nameof(UserRole.Client))]
+[CustomAuthorize(nameof(UserRole.Admin), nameof(UserRole.Owner))]
 public class UsersController(
     IUserService service,
     IValidator<UserDto> validator,
     IMapper mapper
     ) : BaseController
 {
+    [AllowAnonymous]
     [HttpGet]
     public async ValueTask<IActionResult> Get([FromQuery] UserFilter filter, CancellationToken cancellationToken)
     {

@@ -38,7 +38,7 @@ public class UserService(
             query = query.Where(entity => entity.EmailAddress.ToLower().Contains(filter.EmailAddress.ToLower()));
 
         if (filter.PhoneNumber is not null)
-            query = query.Where(entity => entity.FirstName.ToLower().Contains(filter.PhoneNumber.ToLower()));
+            query = query.Where(entity => entity.PhoneNumber.ToLower().Contains(filter.PhoneNumber.ToLower()));
 
         if (filter.Role is not null)
             query = query.Where(entity => entity.Role == filter.Role);
