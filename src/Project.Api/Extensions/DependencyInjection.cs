@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Project.Api.ExceptionHandlers;
 using Project.Api.Routing;
@@ -10,6 +11,7 @@ using Project.Application.Common.Response;
 using Project.Application.Settings;
 using Project.Persistence.UnitOfWork.Interfaces;
 using System.Reflection;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace Project.Api.Extensions;
@@ -27,6 +29,7 @@ public static class DependencyInjection
         services.AddMappers();
         services.AddJsonConverter();
         services.AddSettings(configuration);
+        services.AddSecurity(configuration);
 
         return services;
     }
@@ -85,7 +88,7 @@ public static class DependencyInjection
 
     private static IServiceCollection AddSwagger(this IServiceCollection services)
     {
-        services.AddSwaggerGen(setup =>
+        services.AddSwaggerGen(options =>
         {
             var jwtSecurityScheme = new OpenApiSecurityScheme
             {
@@ -94,21 +97,19 @@ public static class DependencyInjection
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.Http,
                 Scheme = JwtBearerDefaults.AuthenticationScheme,
-                Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
-
+                Description = "Put **_ONLY_** your JWT Bearer token on the textbox below!",
                 Reference = new OpenApiReference
                 {
                     Id = JwtBearerDefaults.AuthenticationScheme,
-                    Type = ReferenceType.SecurityScheme
+                    Type = ReferenceType.SecurityScheme,
                 }
             };
 
-            setup.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-
-            setup.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    { jwtSecurityScheme, Array.Empty<string>() }
-                });
+            options.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                { jwtSecurityScheme, Array.Empty<string>() },
+            });
         });
 
         return services;
@@ -130,5 +131,30 @@ public static class DependencyInjection
         services.Configure<SystemSettings>(configuration.GetSection(nameof(SystemSettings)));
 
         return services;
+    }
+
+    private static void AddSecurity(this IServiceCollection services, IConfiguration configuration)
+    {
+        var jwtSettings = configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>()
+            ?? throw new InvalidOperationException($"{nameof(JwtSettings)} is not configurated.");
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = jwtSettings.ValidateIssuer,
+                    ValidIssuer = jwtSettings.ValidIssuer,
+                    ValidAudience = jwtSettings.ValidAudience,
+                    ValidateAudience = jwtSettings.ValidateAudience,
+                    ValidateLifetime = jwtSettings.ValidateLifeTime,
+                    ValidateIssuerSigningKey = jwtSettings.ValidateIssuerSigningKey,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
+                };
+            });
     }
 }
