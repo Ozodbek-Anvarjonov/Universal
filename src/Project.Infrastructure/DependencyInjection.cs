@@ -2,8 +2,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using Project.Application.Common.Identities;
 using Project.Application.Services;
+using Project.Infrastructure.Common.Caching;
 using Project.Infrastructure.Common.Identities;
 using Project.Infrastructure.Services;
+using Project.Persistence.Caching.Brokers;
 
 namespace Project.Infrastructure;
 
@@ -13,6 +15,7 @@ public static class DependencyInjection
     {
         services.AddServices();
         services.AddIdentities();
+        services.AddCaching();
 
         return services;
     }
@@ -31,6 +34,14 @@ public static class DependencyInjection
         services.AddScoped<IRefreshTokenService, RefreshTokenService>();
         services.AddScoped<IPasswordHasherService, PasswordHasherService>();
         services.AddScoped<IAuthService, AuthService>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddCaching(this IServiceCollection services)
+    {
+        services.AddSingleton<ICacheBroker, LazyMemoryCacheBroker>();
+        //services.AddSingleton<ICacheBroker, RedisDistributedCacheBroker>();
 
         return services;
     }

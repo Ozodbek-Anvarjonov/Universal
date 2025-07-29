@@ -9,6 +9,7 @@ using Project.Api.Routing;
 using Project.Api.Services;
 using Project.Application.Common.Response;
 using Project.Application.Settings;
+using Project.Persistence.Caching.Settings;
 using Project.Persistence.UnitOfWork.Interfaces;
 using System.Reflection;
 using System.Text;
@@ -30,6 +31,7 @@ public static class DependencyInjection
         services.AddJsonConverter();
         services.AddSettings(configuration);
         services.AddSecurity(configuration);
+        services.AddMemoryCache();
 
         return services;
     }
@@ -132,6 +134,7 @@ public static class DependencyInjection
     {
         services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
         services.Configure<SystemSettings>(configuration.GetSection(nameof(SystemSettings)));
+        services.Configure<CacheSettings>(configuration.GetSection(nameof(CacheSettings)));
 
         return services;
     }
