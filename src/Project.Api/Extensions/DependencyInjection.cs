@@ -1,7 +1,13 @@
-﻿using Project.Api.ExceptionHandlers;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.OpenApi.Models;
+using Project.Api.ExceptionHandlers;
+using Project.Api.Routing;
 using Project.Api.Services;
 using Project.Application.Common.Response;
 using Project.Persistence.UnitOfWork.Interfaces;
+using System.Reflection;
 
 namespace Project.Api.Extensions;
 
@@ -10,9 +16,12 @@ public static class DependencyInjection
     public static IServiceCollection AddApiServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddServices();
-        services.AddSwaggerGen();
+        services.AddSwagger();
         services.AddControllers();
         services.AddExceptionHandlers();
+        services.AddValidators();
+        services.AddHttpContextAccessor();
+        services.AddMappers();
 
         return services;
     }
@@ -41,6 +50,61 @@ public static class DependencyInjection
         services.AddExceptionHandler<AppExceptionHandler>();
         services.AddExceptionHandler<ArgumentExceptionHandler>();
         services.AddExceptionHandler<InternalServerExceptionHandler>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddValidators(this IServiceCollection services)
+    {
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+        return services;
+    }
+
+    private static IServiceCollection AddControllers(this IServiceCollection services)
+    {
+        services.AddControllers(options =>
+        {
+            options.Conventions.Add(new RouteTokenTransformerConvention(new RouteTransformer()));
+        });
+
+        return services;
+    }
+
+    private static IServiceCollection AddMappers(this IServiceCollection services)
+    {
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+        return services;
+    }
+
+    private static IServiceCollection AddSwagger(this IServiceCollection services)
+    {
+        services.AddSwaggerGen(setup =>
+        {
+            var jwtSecurityScheme = new OpenApiSecurityScheme
+            {
+                BearerFormat = "JWT",
+                Name = "JWT Authentication",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Scheme = JwtBearerDefaults.AuthenticationScheme,
+                Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
+
+                Reference = new OpenApiReference
+                {
+                    Id = JwtBearerDefaults.AuthenticationScheme,
+                    Type = ReferenceType.SecurityScheme
+                }
+            };
+
+            setup.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+
+            setup.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    { jwtSecurityScheme, Array.Empty<string>() }
+                });
+        });
 
         return services;
     }

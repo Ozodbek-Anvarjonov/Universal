@@ -15,7 +15,19 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                 Id = 1,
                 FirstName = "SYSTEM",
                 LastName = "SYSTEM",
+                EmailAddress = "anvarjonovozodbek416@gmail.com",
+                PhoneNumber = "+998950148306",
+                Password = "",
                 Role = UserRole.Owner,
+                IsActive = true,
             });
+
+        builder
+            .HasIndex(entity => entity.EmailAddress)
+            .IsUnique();
+
+        builder
+            .HasIndex(entity => entity.PhoneNumber)
+            .IsUnique();
     }
 }

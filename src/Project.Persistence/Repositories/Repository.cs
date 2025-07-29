@@ -66,7 +66,7 @@ public class Repository<TEntity, TContext>(TContext context) : IRepository<TEnti
         await context.SaveChangesAsync(cancellationToken);
 }
 
-public class Repository<TEntity>(AppDbContext dbContext) : Repository<TEntity, AppDbContext>(dbContext)
+public class Repository<TEntity>(AppDbContext dbContext) : Repository<TEntity, AppDbContext>(dbContext), IRepository<TEntity>
     where TEntity : Entity
 {
 }

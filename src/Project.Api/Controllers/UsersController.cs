@@ -1,40 +1,54 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Project.Api.Extensions;
 using Project.Application.Common.Exceptions;
 using Project.Application.Common.Filters;
 using Project.Application.Dtos.Users;
+using Project.Application.Services;
+using Project.Domain.Entities;
 
 namespace Project.Api.Controllers;
 
-public class UsersController : BaseController
+public class UsersController(
+    IUserService service,
+    IValidator<UserDto> validator,
+    IMapper mapper
+    ) : BaseController
 {
     [HttpGet]
     public async ValueTask<IActionResult> Get([FromQuery] UserFilter filter, CancellationToken cancellationToken)
     {
-        throw new NotFoundException();
+        var data = await service.GetAsync(filter, cancellationToken: cancellationToken);
+
+        return Ok(mapper.Map<IEnumerable<UserGetDto>>(data));
     }
 
     [HttpPost]
     public async ValueTask<IActionResult> Post([FromBody] UserDto dto, CancellationToken cancellationToken)
     {
-        throw new ConflictException();
+        await validator.EnsureValidationAsync(dto, cancellationToken);
+
+        var data = await service.CreateAsync(mapper.Map<User>(dto), cancellationToken: cancellationToken);
+
+        return Ok(mapper.Map<UserGetDto>(data));
     }
 
     [HttpPut("{id:long}")]
     public async ValueTask<IActionResult> Put([FromRoute] long id, [FromBody] UserDto dto, CancellationToken cancellationToken)
     {
-        throw new ValidationException();
-    }
+        await validator.EnsureValidationAsync(dto);
 
-    [HttpPatch("{id:long}")]
-    public async ValueTask<IActionResult> Patch([FromRoute] long id, [FromBody] UserDto dto, CancellationToken cancellationToken)
-    {
-        throw new ArgumentOutOfRangeException();
+        var data = await service.UpdateAsync(id, mapper.Map<User>(dto), cancellationToken: cancellationToken);
+
+        return Ok(mapper.Map<UserGetDto>(data));
     }
 
     [HttpDelete("{id:long}")]
     public async ValueTask<IActionResult> Delete([FromRoute] long id, CancellationToken cancellationToken)
     {
-        throw new BadRequestException();
+        var data = await service.DeleteByIdAsync(id, cancellationToken: cancellationToken);
+
+        return Ok(data);
     }
 }

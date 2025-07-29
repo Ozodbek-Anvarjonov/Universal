@@ -9,13 +9,15 @@ namespace Project.Persistence.UnitOfWork;
 
 public class UnitOfWork<TContext>(
     TContext context,
-    IRepository<User, TContext> users
+    IRepository<User, TContext> users,
+    IRepository<RefreshToken, TContext> refreshTokens
     ) : IUnitOfWork<TContext>
     where TContext : DbContext
 {
     // repositories
     public IRepository<User, TContext> Users { get; } = users;
 
+    public IRepository<RefreshToken, TContext> RefreshTokens { get; } = refreshTokens;
     //
     private IDbContextTransaction? currentTransaction;
     private bool disposed;
@@ -94,7 +96,8 @@ public class UnitOfWork<TContext>(
 
 public class UnitOfWork(
     AppDbContext context,
-    IRepository<User, AppDbContext> users
-    ) : UnitOfWork<AppDbContext>(context, users)
+    IRepository<User, AppDbContext> users,
+    IRepository<RefreshToken, AppDbContext> refreshTokens
+    ) : UnitOfWork<AppDbContext>(context, users, refreshTokens), IUnitOfWork
 {
 }

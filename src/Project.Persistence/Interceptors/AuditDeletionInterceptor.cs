@@ -5,7 +5,7 @@ using Project.Persistence.UnitOfWork.Interfaces;
 
 namespace Project.Persistence.Interceptors;
 
-public class AuditDeletionInterceptor(IUserContext userContext) : SaveChangesInterceptor
+internal class AuditDeletionInterceptor(IUserContext userContext) : SaveChangesInterceptor
 {
     public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
     {

@@ -1,11 +1,18 @@
-﻿using Project.Application.Common.Response;
+﻿using Newtonsoft.Json;
+using Project.Application.Common.Response;
 
 namespace Project.Api.Services;
 
-public class HeaderWriter : IHeaderWriter
+public class HeaderWriter(IHttpContextAccessor contextAccessor) : IHeaderWriter
 {
     public void WritePaginationMetaData(PaginationMetaData paginationMetaData)
     {
-        throw new NotImplementedException();
+        if (paginationMetaData is null) return;
+
+        var json = JsonConvert.SerializeObject(paginationMetaData);
+        var headers = contextAccessor.HttpContext?.Response?.Headers;
+
+        headers?.Remove("X-Pagination");
+        headers?.Add("X-Pagination", json);
     }
 }

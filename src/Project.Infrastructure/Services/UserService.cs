@@ -1,8 +1,10 @@
-﻿using Project.Application.Common.Exceptions;
+﻿using Microsoft.EntityFrameworkCore;
+using Project.Application.Common.Exceptions;
 using Project.Application.Common.Filters;
 using Project.Application.Common.Response;
 using Project.Application.Services;
 using Project.Domain.Entities;
+using Project.Infrastructure.Common.Extensions;
 using Project.Persistence.Repositories;
 
 namespace Project.Infrastructure.Services;
@@ -11,7 +13,34 @@ public class UserService(IRepository<User> repository, IHeaderWriter writer) : I
 {
     public Task<IEnumerable<User>> GetAsync(UserFilter filter, bool asNoTracking = true, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var query = repository.Get();
+
+        if (asNoTracking)
+            query = query.AsNoTracking();
+
+        if (filter.FirstName is not null)
+            query = query.Where(entity => entity.FirstName.ToLower().Contains(filter.FirstName.ToLower()));
+
+        if (filter.LastName is not null)
+            query = query.Where(entity => entity.LastName.ToLower().Contains(filter.LastName.ToLower()));
+
+        if (filter.MiddleName is not null)
+            query = query.Where(entity => entity.MiddleName != null
+                && entity.MiddleName.ToLower().Contains(filter.MiddleName.ToLower()));
+
+        if (filter.EmailAddress is not null)
+            query = query.Where(entity => entity.EmailAddress.ToLower().Contains(filter.EmailAddress.ToLower()));
+
+        if (filter.PhoneNumber is not null)
+            query = query.Where(entity => entity.FirstName.ToLower().Contains(filter.PhoneNumber.ToLower()));
+
+        if (filter.Role is not null)
+            query = query.Where(entity => entity.Role == filter.Role);
+
+        if (filter.IsActive is not null)
+            query = query.Where(entity => entity.IsActive == filter.IsActive);
+
+        return query.ToPaginateAsync(filter, writer, cancellationToken);
     }
 
     public async Task<User> GetByIdAsync(long id, bool asNoTracking = true, CancellationToken cancellationToken = default)

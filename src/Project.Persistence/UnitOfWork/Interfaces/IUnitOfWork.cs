@@ -10,6 +10,8 @@ public interface IUnitOfWork<TContext> : ITransactionManager, IDisposable, IAsyn
 {
     IRepository<User, TContext> Users { get; }
 
+    IRepository<RefreshToken, TContext> RefreshTokens { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
 
