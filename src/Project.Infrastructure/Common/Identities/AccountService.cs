@@ -39,4 +39,24 @@ public class AccountService(
 
         return updatedUser != null;
     }
+
+    public Task<bool> ForgotPasswordByEmailAsync(ForgotPasswordByEmailRequest request, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> ForgotPasswordByPhoneAsync(ForgotPasswordByPhoneRequest request, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> ResetPasswordByEmailAsync(ResetPasswordByEmailRequest request, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> ResetPasswordByPhoneAsync(ResetPasswordByPhoneRequest request, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
 }
