@@ -70,6 +70,9 @@ public class UserService(
     {
         var exist = await GetByIdAsync(id, asNoTracking: false, cancellationToken);
 
+        if (exist.Password is not null)
+            exist.Password = await passwordHasherService.HashAsync(user.Password, cancellationToken: cancellationToken);
+
         await repository.SaveChangesAsync(cancellationToken);
 
         return exist;

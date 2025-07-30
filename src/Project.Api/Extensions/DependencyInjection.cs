@@ -114,6 +114,7 @@ public static class DependencyInjection
             {
                 { jwtSecurityScheme, Array.Empty<string>() },
             });
+            options.DescribeAllParametersInCamelCase();
         });
 
         return services;
