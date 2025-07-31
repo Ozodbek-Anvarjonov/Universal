@@ -1,8 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Project.Application.Common.Exceptions;
 using Project.Application.Common.Identities;
+using Project.Application.Common.Notifications.Services;
+using Project.Application.Common.Notifications.Templates.Contexts;
 using Project.Application.Dtos.Login;
 using Project.Domain.Entities;
+using Project.Domain.Enums;
 using Project.Persistence.UnitOfWork.Interfaces;
 using System.Net;
 
@@ -12,7 +15,8 @@ public class AuthService(
     IPasswordHasherService passwordHasherService,
     IAccessTokenGeneratorService accessTokenGeneratorService,
     IRefreshTokenService refreshTokenService,
-    IUnitOfWork unitOfWork
+    IUnitOfWork unitOfWork,
+    INotificationSenderService notificationSenderService
     ) : IAuthService
 {
     public async Task<LoginResponse> LoginAsync(LoginWithEmailRequest loginRequest, CancellationToken cancellationToken = default)
@@ -39,10 +43,21 @@ public class AuthService(
     {
         user.Password = await passwordHasherService.HashAsync(user.Password, cancellationToken: cancellationToken);
 
-        Console.WriteLine(user.Password);
-        throw new NotFoundException(user.Password);
-
         var createdUser = await unitOfWork.Users.CreateAsync(user, cancellationToken: cancellationToken);
+        var notification = new Notification
+        {
+            ReceiverUser = createdUser,
+            ReceiverUserId = createdUser.Id,
+            Type = NotificationType.Register,
+            ChannelType = NotificationChannelType.Sms,
+        };
+        var context = new RegisterNotificationTemplateContext
+        {
+            FirstName = createdUser.FirstName,
+            RegisteredAt = createdUser.CreatedAt.ToString(),
+        };
+
+        await notificationSenderService.SendAsync(notification, context, cancellationToken);
 
         return createdUser != null;
     }

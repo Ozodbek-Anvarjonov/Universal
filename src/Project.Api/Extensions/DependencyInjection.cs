@@ -33,6 +33,7 @@ public static class DependencyInjection
         services.AddJsonConverter();
         services.AddSettings(configuration);
         services.AddSecurity(configuration);
+        services.AddCredentials(configuration);
 
         return services;
     }
@@ -137,6 +138,16 @@ public static class DependencyInjection
         services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
         services.Configure<SystemSettings>(configuration.GetSection(nameof(SystemSettings)));
         services.Configure<CacheSettings>(configuration.GetSection(nameof(CacheSettings)));
+
+        return services;
+    }
+
+    private static IServiceCollection AddCredentials(this IServiceCollection services, IConfiguration configuration)
+    {
+
+        // credentials configurations
+        services.Configure<RegisterSmsNotificationSenderCredentialOptions>(configuration.GetSection("NotificationCredentials:Sms:Register"));
+        services.Configure<RegisterEmailNotificationSenderCredentialOptions>(configuration.GetSection("NotificationCredentials:Email:Register"));
 
         return services;
     }
