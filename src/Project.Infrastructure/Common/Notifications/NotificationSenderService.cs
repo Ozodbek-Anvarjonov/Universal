@@ -39,6 +39,8 @@ public class NotificationSenderService(
             ReceiverUser = notification.ReceiverUser,
         });
 
+        notification.Title = title;
+        notification.Message = formatMessage;
         notification.SenderName = sendResult.SenderName;
         notification.SenderContact = sendResult.SenderContact;
         notification.IsDelivered = sendResult.IsSent;
