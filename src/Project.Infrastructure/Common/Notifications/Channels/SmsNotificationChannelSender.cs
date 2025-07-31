@@ -4,9 +4,9 @@ using Project.Domain.Enums;
 
 namespace Project.Infrastructure.Common.Notifications.Channels;
 
-public class EmailNotificationSender : INotificationSenderChannel
+public class SmsNotificationChannelSender : INotificationSenderChannel
 {
-    public NotificationChannelType ChannelType { get; } = NotificationChannelType.Email;
+    public NotificationChannelType ChannelType { get; } = NotificationChannelType.Sms;
 
     public Task<SendResult> SendAsync(ChannelContext channel, CancellationToken cancellationToken = default)
     {

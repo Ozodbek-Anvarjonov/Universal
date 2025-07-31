@@ -8,13 +8,14 @@ public class LoginNotificationTemplate : INotificationTemplate
 {
     public NotificationType Type { get; } = NotificationType.Login;
 
-    public string GetMessage(NotificationTemplateContext? context = null)
-    {
-        throw new NotImplementedException();
-    }
+    public string GetMessage(NotificationTemplateContext? context = null) =>
+        "Login successful";
 
     public string GetTitle(NotificationTemplateContext? context = null)
     {
-        throw new NotImplementedException();
+        if (context is not LoginNotificationTemplateContext ctx)
+            return "You have successfully registered in the system.";
+
+        return $"Dear {ctx.FirstName}, you have successfully login with the system at {ctx.LoginAt}.";
     }
 }

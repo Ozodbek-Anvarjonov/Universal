@@ -7,4 +7,6 @@ public class SendResult
     public string SenderContact { get; set; } = default!;
     
     public bool IsSent { get; set; }
+
+    public string? ErrorMessage {  get; set; }
 }

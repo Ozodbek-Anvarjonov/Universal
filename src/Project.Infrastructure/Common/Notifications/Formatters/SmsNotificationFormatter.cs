@@ -7,13 +7,8 @@ public class SmsNotificationFormatter : INotificationFormatter
 {
     public NotificationChannelType ChannelType { get; } = NotificationChannelType.Sms;
 
-    public string FormatMessage(string message)
-    {
-        throw new NotImplementedException();
-    }
+    public string FormatTitle(string title) => string.Empty;
 
-    public string FormatTitle(string title)
-    {
-        throw new NotImplementedException();
-    }
+    public string FormatMessage(string message) =>
+        message.Length > 160 ? message.Substring(0, 157) + "..." : message;
 }

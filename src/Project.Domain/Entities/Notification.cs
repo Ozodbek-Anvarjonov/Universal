@@ -18,6 +18,7 @@ public class Notification : SoftDeletedEntity
     public string Message { get; set; } = default!;
 
     public bool IsDelivered { get; set; }
+    public string? ErrorMessage { get; set; }
     public DateTimeOffset? DeliveredAt { get; set; }
 
     public bool IsRead { get; set; } = false;

@@ -35,11 +35,14 @@ public class NotificationSenderService(
             FormattedTitle = formatTitle,
             FormattedMessage = formatMessage,
             Credential = credential,
+            ReceiverUserId = notification.ReceiverUserId,
+            ReceiverUser = notification.ReceiverUser,
         });
 
         notification.SenderName = sendResult.SenderName;
         notification.SenderContact = sendResult.SenderContact;
         notification.IsDelivered = sendResult.IsSent;
+        notification.ErrorMessage = sendResult.ErrorMessage;
 
         await notificationService.CreateAsync(notification, cancellationToken: cancellationToken);
     }

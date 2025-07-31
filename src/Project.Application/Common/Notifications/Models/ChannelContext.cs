@@ -1,5 +1,5 @@
 ﻿using Project.Application.Common.Notifications.Credentials;
-using System.Net;
+using Project.Domain.Entities;
 
 namespace Project.Application.Common.Notifications.Models;
 
@@ -10,6 +10,9 @@ public class ChannelContext
 
     public string FormattedTitle { get; set; } = default!;
     public string FormattedMessage { get; set; } = default!;
+
+    public long ReceiverUserId { get; set; }
+    public User ReceiverUser { get; set; } = default!;
 
     public INotificationSenderCredential Credential { get; set; } = default!;
 }
