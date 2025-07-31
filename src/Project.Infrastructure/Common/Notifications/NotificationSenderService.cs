@@ -1,4 +1,5 @@
-﻿using Project.Application.Common.Notifications.Channels;
+﻿using Force.DeepCloner;
+using Project.Application.Common.Notifications.Channels;
 using Project.Application.Common.Notifications.Credentials;
 using Project.Application.Common.Notifications.Formatters;
 using Project.Application.Common.Notifications.Models;
@@ -6,6 +7,7 @@ using Project.Application.Common.Notifications.Services;
 using Project.Application.Common.Notifications.Templates;
 using Project.Application.Common.Notifications.Templates.Contexts;
 using Project.Domain.Entities;
+using Project.Domain.Enums;
 
 namespace Project.Infrastructure.Common.Notifications;
 
@@ -47,5 +49,21 @@ public class NotificationSenderService(
         notification.ErrorMessage = sendResult.ErrorMessage;
 
         await notificationService.CreateAsync(notification, cancellationToken: cancellationToken);
+    }
+
+    public async Task SendAsync(
+        Notification notification,
+        NotificationTemplateContext context,
+        IEnumerable<NotificationChannelType> channelTypes,
+        CancellationToken cancellationToken = default
+        )
+    {
+        foreach (var channelType in channelTypes.Distinct())
+        {
+            var clonedNotification = notification.DeepClone();
+            clonedNotification.ChannelType = channelType;
+            clonedNotification.ReceiverUser = notification.ReceiverUser;
+            await SendAsync(clonedNotification, context, cancellationToken);
+        }
     }
 }

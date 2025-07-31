@@ -57,7 +57,11 @@ public class AuthService(
             RegisteredAt = createdUser.CreatedAt.ToString(),
         };
 
-        await notificationSenderService.SendAsync(notification, context, cancellationToken);
+        await notificationSenderService.SendAsync(notification, context, new List<NotificationChannelType>
+        {
+            NotificationChannelType.Email,
+            NotificationChannelType.Sms
+        }, cancellationToken);
 
         return createdUser != null;
     }
