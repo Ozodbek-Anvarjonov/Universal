@@ -5,15 +5,18 @@ namespace Project.Domain.Entities;
 
 public class Notification : SoftDeletedEntity
 {
-    public long UserId { get; set; }
-    public User User { get; set; } = default!;
+    public string SenderName { get; set; } = default!;
+    public string SenderContact { get; set; } = default!;
+
+    public long ReceiverUserId { get; set; }
+    public User ReceiverUser { get; set; } = default!;
 
     public NotificationType Type { get; set; }
     public NotificationChannelType ChannelType { get; set; }
 
     public string Title { get; set; } = default!;
     public string Message { get; set; } = default!;
-    
+
     public bool IsDelivered { get; set; }
     public DateTimeOffset? DeliveredAt { get; set; }
 

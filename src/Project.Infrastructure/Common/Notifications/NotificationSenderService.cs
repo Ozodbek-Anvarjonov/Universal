@@ -1,12 +1,46 @@
-﻿using Project.Application.Common.Notifications;
+﻿using Project.Application.Common.Notifications.Channels;
+using Project.Application.Common.Notifications.Credentials;
+using Project.Application.Common.Notifications.Formatters;
+using Project.Application.Common.Notifications.Models;
+using Project.Application.Common.Notifications.Services;
+using Project.Application.Common.Notifications.Templates;
+using Project.Application.Common.Notifications.Templates.Contexts;
 using Project.Domain.Entities;
 
 namespace Project.Infrastructure.Common.Notifications;
 
-public class NotificationSenderService : INotificationSenderService
+public class NotificationSenderService(
+    INotificationSenderChannelProvider channelProvider,
+    INotificationSenderCredentialProvider credentialProvider,
+    INotificationTemplateProvider templateProvider,
+    INotificationFormatterProvider formatterProvider,
+    INotificationService notificationService
+    ) : INotificationSenderService
 {
-    public Task SendAsync(Notification notification, CancellationToken cancellationToken = default)
+    public async Task SendAsync(Notification notification, NotificationTemplateContext context, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var template = templateProvider.GetTemplate(notification.Type);
+        var formatter = formatterProvider.GetFormatter(notification.ChannelType);
+        var credential = credentialProvider.GetCredential(notification.Type, notification.ChannelType);
+        var channel = channelProvider.GetChannel(notification.ChannelType);
+
+        var title = template.GetTitle(context);
+        var message = template.GetMessage(context);
+        var formatTitle = formatter.FormatTitle(title);
+        var formatMessage = formatter.FormatMessage(message);
+        var sendResult = await channel.SendAsync(new ChannelContext
+        {
+            Title = title,
+            Message = formatMessage,
+            FormattedTitle = formatTitle,
+            FormattedMessage = formatMessage,
+            Credential = credential,
+        });
+
+        notification.SenderName = sendResult.SenderName;
+        notification.SenderContact = sendResult.SenderContact;
+        notification.IsDelivered = sendResult.IsSent;
+
+        await notificationService.CreateAsync(notification, cancellationToken: cancellationToken);
     }
 }
