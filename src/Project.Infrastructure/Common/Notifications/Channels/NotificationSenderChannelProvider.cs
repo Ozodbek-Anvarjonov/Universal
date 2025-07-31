@@ -4,11 +4,11 @@ using Project.Domain.Enums;
 
 namespace Project.Infrastructure.Common.Notifications.Channels;
 
-public class NotificationChannelSenderProvider : INotificationSenderChannelProvider
+public class NotificationSenderChannelProvider : INotificationSenderChannelProvider
 {
     private readonly Dictionary<NotificationChannelType, INotificationSenderChannel> channelMap;
 
-    public NotificationChannelSenderProvider(IEnumerable<INotificationSenderChannel> channels)
+    public NotificationSenderChannelProvider(IEnumerable<INotificationSenderChannel> channels)
     {
         channelMap = new();
 

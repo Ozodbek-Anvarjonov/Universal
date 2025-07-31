@@ -5,9 +5,9 @@ using Project.Infrastructure.Common.Notifications.Credentials.Sms;
 
 namespace Project.Infrastructure.Common.Notifications.Services;
 
-public class EskizSmsSenderService : ISmsSenderService
+public class EskizSmsService : ISmsService
 {
-    public async ValueTask<SendResult> SendAsync(ChannelContext context, CancellationToken cancellationToken = default)
+    public async Task<SendResult> SendAsync(ChannelContext context, CancellationToken cancellationToken = default)
     {
         if (context.Credential is not SmsNotificationSenderCredential credential)
             throw new NotFoundException($"Credential is not found for type {context.Credential.Type} and channel {context.Credential.ChannelType}.");

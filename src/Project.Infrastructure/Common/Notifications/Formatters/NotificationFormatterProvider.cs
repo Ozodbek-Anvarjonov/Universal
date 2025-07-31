@@ -4,11 +4,11 @@ using Project.Domain.Enums;
 
 namespace Project.Infrastructure.Common.Notifications.Formatters;
 
-public class NotificationFormatProvider : INotificationFormatterProvider
+public class NotificationFormatterProvider : INotificationFormatterProvider
 {
     private readonly Dictionary<NotificationChannelType, INotificationFormatter> formatterMap;
 
-    public NotificationFormatProvider(IEnumerable<INotificationFormatter> formatters)
+    public NotificationFormatterProvider(IEnumerable<INotificationFormatter> formatters)
     {
         formatterMap = new ();
 

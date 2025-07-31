@@ -9,6 +9,8 @@ using Project.Api.Routing;
 using Project.Api.Services;
 using Project.Application.Common.Response;
 using Project.Application.Settings;
+using Project.Infrastructure.Common.Notifications.Credentials.Emails.Options;
+using Project.Infrastructure.Common.Notifications.Credentials.Sms.Options;
 using Project.Persistence.Caching.Settings;
 using Project.Persistence.UnitOfWork.Interfaces;
 using System.Reflection;
