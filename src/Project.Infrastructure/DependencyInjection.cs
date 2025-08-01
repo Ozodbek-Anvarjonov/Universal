@@ -95,6 +95,7 @@ public static class DependencyInjection
         // credentials
         services.AddScoped<INotificationSenderCredential, RegisterSmsNotificationSenderCredential>();
         services.AddScoped<INotificationSenderCredential, RegisterEmailNotificationSenderCredential>();
+        services.AddScoped<INotificationSenderCredential, LoginEmailNotificationSenderCredential>();
 
         return services;
     }

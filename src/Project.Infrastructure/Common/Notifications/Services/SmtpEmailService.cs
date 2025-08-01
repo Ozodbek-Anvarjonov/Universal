@@ -17,12 +17,12 @@ public class SmtpEmailService : IEmailService
         var smtpClient = new SmtpClient(credential.Host, credential.Port)
         {
             EnableSsl = credential.EnableSsl,
-            Credentials = new NetworkCredential { UserName = credential.Username, Password = credential.Password },
+            Credentials = new NetworkCredential { UserName = credential.SenderEmail, Password = credential.Password },
         };
 
         var mailMessage = new MailMessage
         {
-            From = new MailAddress(credential.SenderEmail, credential.SenderName),
+            From = new MailAddress(credential.SenderEmail),
             Subject = context.FormattedTitle,
             Body = context.FormattedMessage,
             IsBodyHtml = true,
