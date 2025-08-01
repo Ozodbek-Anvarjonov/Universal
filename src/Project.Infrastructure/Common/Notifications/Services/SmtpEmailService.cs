@@ -40,6 +40,7 @@ public class SmtpEmailService : IEmailService
         {
             await smtpClient.SendMailAsync(mailMessage);
             sendResult.IsSent = true;
+            sendResult.DeliveredAt = DateTimeOffset.UtcNow;
         }
         catch (SmtpFailedRecipientException ex)
         {

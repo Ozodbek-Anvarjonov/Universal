@@ -8,10 +8,10 @@ public class RegisterNotificationTemplate : INotificationTemplate
 {
     public NotificationType Type { get; } = NotificationType.Register;
 
-    public string GetMessage(NotificationTemplateContext? context = null) =>
+    public string GetTitle(NotificationTemplateContext? context = null) =>
         "Registration successful";
 
-    public string GetTitle(NotificationTemplateContext? context = null)
+    public string GetMessage(NotificationTemplateContext? context = null)
     {
         if (context is not RegisterNotificationTemplateContext ctx)
             return "You have successfully registered in the system.";

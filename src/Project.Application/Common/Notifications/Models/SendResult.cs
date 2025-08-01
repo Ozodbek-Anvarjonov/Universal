@@ -8,5 +8,7 @@ public class SendResult
     
     public bool IsSent { get; set; }
 
+    public DateTimeOffset? DeliveredAt { get; set; }
+
     public string? ErrorMessage {  get; set; }
 }

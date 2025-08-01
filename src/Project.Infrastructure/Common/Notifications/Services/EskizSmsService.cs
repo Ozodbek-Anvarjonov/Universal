@@ -17,6 +17,7 @@ public class EskizSmsService : ISmsService
             IsSent = true,
             SenderName = credential.SenderName,
             SenderContact = context.ReceiverUser.PhoneNumber,
+            DeliveredAt = DateTimeOffset.UtcNow,
         };
     }
 }

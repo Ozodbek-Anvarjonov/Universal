@@ -19,7 +19,7 @@ public class NotificationSenderService(
     INotificationService notificationService
     ) : INotificationSenderService
 {
-    public async Task SendAsync(Notification notification, NotificationTemplateContext context, CancellationToken cancellationToken = default)
+    public async Task<Notification> SendAsync(Notification notification, NotificationTemplateContext context, CancellationToken cancellationToken = default)
     {
         var template = templateProvider.GetTemplate(notification.Type);
         var formatter = formatterProvider.GetFormatter(notification.ChannelType);
@@ -42,28 +42,36 @@ public class NotificationSenderService(
         });
 
         notification.Title = title;
-        notification.Message = formatMessage;
+        notification.Message = message;
         notification.SenderName = sendResult.SenderName;
         notification.SenderContact = sendResult.SenderContact;
         notification.IsDelivered = sendResult.IsSent;
+        notification.DeliveredAt = sendResult.DeliveredAt;
         notification.ErrorMessage = sendResult.ErrorMessage;
 
         await notificationService.CreateAsync(notification, cancellationToken: cancellationToken);
+
+        return notification;
     }
 
-    public async Task SendAsync(
+    public async Task<IEnumerable<Notification>> SendAsync(
         Notification notification,
         NotificationTemplateContext context,
         IEnumerable<NotificationChannelType> channelTypes,
         CancellationToken cancellationToken = default
         )
     {
+        var notifications = new List<Notification>();
+
         foreach (var channelType in channelTypes.Distinct())
         {
             var clonedNotification = notification.DeepClone();
             clonedNotification.ChannelType = channelType;
             clonedNotification.ReceiverUser = notification.ReceiverUser;
             await SendAsync(clonedNotification, context, cancellationToken);
+            notifications.Add(clonedNotification);  
         }
+
+        return notifications;
     }
 }
