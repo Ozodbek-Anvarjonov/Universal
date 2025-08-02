@@ -1,7 +1,6 @@
 ﻿using Force.DeepCloner;
 using Project.Application.Common.Notifications.Channels;
 using Project.Application.Common.Notifications.Credentials;
-using Project.Application.Common.Notifications.Formatters;
 using Project.Application.Common.Notifications.Models;
 using Project.Application.Common.Notifications.Services;
 using Project.Application.Common.Notifications.Templates;
@@ -15,27 +14,21 @@ public class NotificationSenderService(
     INotificationSenderChannelProvider channelProvider,
     INotificationSenderCredentialProvider credentialProvider,
     INotificationTemplateProvider templateProvider,
-    INotificationFormatterProvider formatterProvider,
     INotificationService notificationService
     ) : INotificationSenderService
 {
     public async Task<Notification> SendAsync(Notification notification, NotificationTemplateContext context, CancellationToken cancellationToken = default)
     {
-        var template = templateProvider.GetTemplate(notification.Type);
-        var formatter = formatterProvider.GetFormatter(notification.ChannelType);
+        var template = templateProvider.GetTemplate(notification.Type, notification.ChannelType);
         var credential = credentialProvider.GetCredential(notification.Type, notification.ChannelType);
         var channel = channelProvider.GetChannel(notification.ChannelType);
 
         var title = template.GetTitle(context);
         var message = template.GetMessage(context);
-        var formatTitle = formatter.FormatTitle(title);
-        var formatMessage = formatter.FormatMessage(message);
         var sendResult = await channel.SendAsync(new ChannelContext
         {
             Title = title,
-            Message = formatMessage,
-            FormattedTitle = formatTitle,
-            FormattedMessage = formatMessage,
+            Message = message,
             Credential = credential,
             ReceiverUserId = notification.ReceiverUserId,
             ReceiverUser = notification.ReceiverUser,
@@ -69,7 +62,7 @@ public class NotificationSenderService(
             clonedNotification.ChannelType = channelType;
             clonedNotification.ReceiverUser = notification.ReceiverUser;
             await SendAsync(clonedNotification, context, cancellationToken);
-            notifications.Add(clonedNotification);  
+            notifications.Add(clonedNotification);
         }
 
         return notifications;

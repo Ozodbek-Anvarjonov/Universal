@@ -6,6 +6,7 @@ namespace Project.Application.Common.Notifications.Templates;
 public interface INotificationTemplate
 {
     NotificationType Type { get; }
+    NotificationChannelType ChannelType { get; }
 
     string GetTitle(NotificationTemplateContext? context = null);
     string GetMessage(NotificationTemplateContext? context = null);

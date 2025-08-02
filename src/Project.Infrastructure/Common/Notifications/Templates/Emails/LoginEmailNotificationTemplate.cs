@@ -2,11 +2,12 @@
 using Project.Application.Common.Notifications.Templates.Contexts;
 using Project.Domain.Enums;
 
-namespace Project.Infrastructure.Common.Notifications.Templates;
+namespace Project.Infrastructure.Common.Notifications.Templates.Emails;
 
-public class LoginNotificationTemplate : INotificationTemplate
+public class LoginEmailNotificationTemplate : INotificationTemplate
 {
     public NotificationType Type { get; } = NotificationType.Login;
+    public NotificationChannelType ChannelType { get; } = NotificationChannelType.Email;
 
     public string GetTitle(NotificationTemplateContext? context = null) =>
         "Login successful";

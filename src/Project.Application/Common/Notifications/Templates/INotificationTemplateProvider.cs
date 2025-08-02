@@ -4,5 +4,5 @@ namespace Project.Application.Common.Notifications.Templates;
 
 public interface INotificationTemplateProvider
 {
-    INotificationTemplate GetTemplate(NotificationType type);
+    INotificationTemplate GetTemplate(NotificationType type, NotificationChannelType channelType);
 }

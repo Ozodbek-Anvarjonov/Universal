@@ -23,8 +23,8 @@ public class SmtpEmailService : IEmailService
         var mailMessage = new MailMessage
         {
             From = new MailAddress(credential.SenderEmail),
-            Subject = context.FormattedTitle,
-            Body = context.FormattedMessage,
+            Subject = context.Title,
+            Body = context.Message,
             IsBodyHtml = true,
         };
 

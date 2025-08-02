@@ -2,11 +2,12 @@
 using Project.Application.Common.Notifications.Templates.Contexts;
 using Project.Domain.Enums;
 
-namespace Project.Infrastructure.Common.Notifications.Templates;
+namespace Project.Infrastructure.Common.Notifications.Templates.Emails;
 
-public class RegisterNotificationTemplate : INotificationTemplate
+public class RegisterEmailNotificationTemplate : INotificationTemplate
 {
     public NotificationType Type { get; } = NotificationType.Register;
+    public NotificationChannelType ChannelType { get; } = NotificationChannelType.Email;
 
     public string GetTitle(NotificationTemplateContext? context = null) =>
         "Registration successful";

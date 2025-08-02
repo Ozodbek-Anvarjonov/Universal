@@ -6,7 +6,7 @@ namespace Project.Infrastructure.Common.Notifications.Templates;
 
 public class NotificationTemplateProvider : INotificationTemplateProvider
 {
-    private readonly Dictionary<NotificationType, INotificationTemplate> templateMap;
+    private readonly Dictionary<(NotificationType,NotificationChannelType), INotificationTemplate> templateMap;
 
     public NotificationTemplateProvider(IEnumerable<INotificationTemplate> templates)
     {
@@ -14,13 +14,13 @@ public class NotificationTemplateProvider : INotificationTemplateProvider
 
         foreach (var template in templates)
         {
-            templateMap[template.Type] = template;
+            templateMap[(template.Type, template.ChannelType)] = template;
         }
     }
 
-    public INotificationTemplate GetTemplate(NotificationType type)
+    public INotificationTemplate GetTemplate(NotificationType type, NotificationChannelType channelType)
     {
-        if (templateMap.TryGetValue(type, out var template)) return template;
+        if (templateMap.TryGetValue((type, channelType), out var template)) return template;
 
         throw new NotFoundException($"Template not found for type{type}.");
     }
