@@ -1,21 +1,35 @@
-﻿using Project.Application.Common.Notifications.Templates;
+﻿using Project.Application.Common.Notifications.Models;
+using Project.Application.Common.Notifications.Templates;
 using Project.Application.Common.Notifications.Templates.Contexts;
 using Project.Domain.Enums;
+using Project.Infrastructure.Common.Notifications.Templates.Base;
 
 namespace Project.Infrastructure.Common.Notifications.Templates.Emails;
 
-public class ChangePasswordEmailNotificationTemplate : INotificationTemplate
+public class ChangePasswordEmailNotificationTemplate : ChangePasswordNotificationTemplateBase
 {
-    public NotificationType Type { get; } = NotificationType.ChangePassword;
-    public NotificationChannelType ChannelType { get; } = NotificationChannelType.Email;
+    public override NotificationChannelType ChannelType => NotificationChannelType.Email;
 
-    public string GetMessage(NotificationTemplateContext? context = null)
+    public override TemplateContext GetContext(NotificationTemplateContext? context = null)
     {
-        throw new NotImplementedException();
-    }
+        var (title, message) = BuildText(context);
 
-    public string GetTitle(NotificationTemplateContext? context = null)
-    {
-        throw new NotImplementedException();
+        var formattedTitle = $"<h2 style=\"color: #2c3e50; font-family: Arial, sans-serif;\">{title}</h2>";
+
+        var formattedMessage = $@"
+            <div style=""font-family: Arial, sans-serif; font-size: 16px; color: #333;"">
+                <p>{message}</p>
+                <p style=""margin-top: 20px; color: #888;"">
+                    If this wasn't you, please change your password immediately.
+                </p>
+            </div>";
+
+        return new TemplateContext
+        {
+            Title = title,
+            Message = message,
+            FormattedTitle = formattedTitle,
+            FormattedMessage = formattedMessage
+        };
     }
 }

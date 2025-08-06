@@ -1,0 +1,18 @@
+﻿using Microsoft.Extensions.Options;
+using Project.Domain.Enums;
+using Project.Infrastructure.Common.Notifications.Credentials.Sms.Options;
+
+namespace Project.Infrastructure.Common.Notifications.Credentials.Sms;
+
+public class LoginSmsNotificationSenderCredential : SmsNotificationSenderCredential
+{
+    public override NotificationType Type { get; } = NotificationType.Login;
+
+    public LoginSmsNotificationSenderCredential(IOptions<LoginSmsNotificationSenderCredentialOptions> options)
+    {
+        Provider = options.Value.Provider;
+        ApiUrl = options.Value.ApiUrl;
+        ApiToken = options.Value.ApiToken;
+        SenderName = options.Value.SenderName;
+    }
+}

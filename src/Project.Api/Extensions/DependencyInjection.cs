@@ -146,9 +146,14 @@ public static class DependencyInjection
     {
 
         // credentials configurations
-        services.Configure<RegisterSmsNotificationSenderCredentialOptions>(configuration.GetSection("NotificationCredentials:Sms:Register"));
+        // email
         services.Configure<RegisterEmailNotificationSenderCredentialOptions>(configuration.GetSection("NotificationCredentials:Email:Register"));
         services.Configure<LoginEmailNotificationSenderCredentialOptions>(configuration.GetSection("NotificationCredentials:Email:Login"));
+        services.Configure<ChangePasswordEmailNotificationSenderCredentialOptions>(configuration.GetSection("NotificationCredentials:Email:ChangePassword"));
+        // sms
+        services.Configure<RegisterSmsNotificationSenderCredentialOptions>(configuration.GetSection("NotificationCredentials:Sms:Register"));
+        services.Configure<LoginSmsNotificationSenderCredentialOptions>(configuration.GetSection("NotificationCredentials:Sms:Login"));
+        services.Configure<ChangePasswordSmsNotificationSenderCredentialOptions>(configuration.GetSection("NotificationCredentials:Sms:ChangePassword"));
 
         return services;
     }

@@ -23,19 +23,18 @@ public class NotificationSenderService(
         var credential = credentialProvider.GetCredential(notification.Type, notification.ChannelType);
         var channel = channelProvider.GetChannel(notification.ChannelType);
 
-        var title = template.GetTitle(context);
-        var message = template.GetMessage(context);
+        var templateContext = template.GetContext(context);
         var sendResult = await channel.SendAsync(new ChannelContext
         {
-            Title = title,
-            Message = message,
+            Title = templateContext.FormattedTitle,
+            Message = templateContext.FormattedMessage,
             Credential = credential,
             ReceiverUserId = notification.ReceiverUserId,
             ReceiverUser = notification.ReceiverUser,
         });
 
-        notification.Title = title;
-        notification.Message = message;
+        notification.Title = templateContext.Title;
+        notification.Message = templateContext.Message;
         notification.SenderName = sendResult.SenderName;
         notification.SenderContact = sendResult.SenderContact;
         notification.IsDelivered = sendResult.IsSent;

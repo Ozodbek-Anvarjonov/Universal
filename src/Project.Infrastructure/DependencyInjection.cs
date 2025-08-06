@@ -16,6 +16,7 @@ using Project.Infrastructure.Common.Notifications.Credentials.Sms;
 using Project.Infrastructure.Common.Notifications.Services;
 using Project.Infrastructure.Common.Notifications.Templates;
 using Project.Infrastructure.Common.Notifications.Templates.Emails;
+using Project.Infrastructure.Common.Notifications.Templates.Sms;
 using Project.Infrastructure.Services;
 using Project.Persistence.Caching.Brokers;
 
@@ -76,9 +77,16 @@ public static class DependencyInjection
         services.AddScoped<INotificationSenderCredentialProvider, NotificationSenderCredentialProvider>();
 
         // templates
+        // email
         services.AddScoped<INotificationTemplate, RegisterEmailNotificationTemplate>();
         services.AddScoped<INotificationTemplate, LoginEmailNotificationTemplate>();
         services.AddScoped<INotificationTemplate, ChangePasswordEmailNotificationTemplate>();
+
+        // sms
+        services.AddScoped<INotificationTemplate, RegisterSmsNotificationTemplate>();
+        services.AddScoped<INotificationTemplate, LoginSmsNotificationTemplate>();
+        services.AddScoped<INotificationTemplate, ChangePasswordSmsNotificationTemplate>();
+
 
         // channels
         services.AddScoped<INotificationSenderChannel, EmailNotificationSenderChannel>();

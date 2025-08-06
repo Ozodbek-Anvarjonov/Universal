@@ -1,22 +1,32 @@
-﻿using Project.Application.Common.Notifications.Templates;
+﻿using Project.Application.Common.Notifications.Models;
 using Project.Application.Common.Notifications.Templates.Contexts;
 using Project.Domain.Enums;
+using Project.Infrastructure.Common.Notifications.Templates.Base;
 
 namespace Project.Infrastructure.Common.Notifications.Templates.Emails;
 
-public class RegisterEmailNotificationTemplate : INotificationTemplate
+public class RegisterEmailNotificationTemplate : RegisterNotificationTemplateBase
 {
-    public NotificationType Type { get; } = NotificationType.Register;
-    public NotificationChannelType ChannelType { get; } = NotificationChannelType.Email;
+    public override NotificationChannelType ChannelType => NotificationChannelType.Email;
 
-    public string GetTitle(NotificationTemplateContext? context = null) =>
-        "Registration successful";
-
-    public string GetMessage(NotificationTemplateContext? context = null)
+    public override TemplateContext GetContext(NotificationTemplateContext? context = null)
     {
-        if (context is not RegisterNotificationTemplateContext ctx)
-            return "You have successfully registered in the system.";
+        var (title, message) = base.BuildText(context);
+        var formattedTitle = $"<h2 style=\"color: #2c3e50; font-family: Arial, sans-serif;\">{title}</h2>";
+        var formattedMessage = $@"
+            <div style=""font-family: Arial, sans-serif; font-size: 16px; color: #333;"">
+                <p>{message}</p>
+                <p style=""margin-top: 20px; color: #888;"">
+                    If this wasn't you, please change your password immediately.
+                </p>
+            </div>";
 
-        return $"Dear {ctx.FirstName}, you have successfully registered with the system at {ctx.RegisteredAt}.";
+        return new TemplateContext
+        {
+            Title = title,
+            Message = message,
+            FormattedTitle = formattedTitle,
+            FormattedMessage = formattedMessage
+        };
     }
 }
